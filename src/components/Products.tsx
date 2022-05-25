@@ -1,6 +1,7 @@
 import React from 'react';
 import {IProduct} from '../types'
 import {FC} from "react";
+import ProductItem from './ProductItem/ProductItem';
 
 const products:IProduct[] = [
   {
@@ -38,7 +39,7 @@ const Products: FC = () => {
     <div className='mt-4'>
 
       {products.map(product => (
-
+        <ProductItem product={product} key={product._id}/>
       ))}
 
     </div>
