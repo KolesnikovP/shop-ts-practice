@@ -3,7 +3,7 @@ import {actionTypes, TypeActionCart} from './types';
 
 const initialState: ICartItem[] = []
 
-export const cartReducer = (state = initialState, action: TypeActionCart){
+export const cartReducer = (state = initialState, action: TypeActionCart) => {
   switch (action.type) {
     case actionTypes.CART_ADD_ITEM:
     {
@@ -22,8 +22,10 @@ export const cartReducer = (state = initialState, action: TypeActionCart){
       }
       return cart
     }
-    case actionTypes.CART_REMOVE_ITEM:
-      return { value: state.value - 1 }
+
+    case actionTypes.CART_REMOVE_ITEM: {
+      return state.filter(item => item._id !== action.payload)
+    }
     default:
       return state
   }

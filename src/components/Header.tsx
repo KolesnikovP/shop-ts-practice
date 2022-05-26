@@ -2,25 +2,24 @@ import React, {FC, useState} from 'react';
 import logoImage from '../assets/images/fastify.svg'
 import cartIcon from '../assets/images/bx-basket.svg'
 import cn from 'classnames'
-import {ICartItem} from '../types';
 
-const cartItems:ICartItem[] = [
-  {
-    _id: 'dfa23sfd',
-    imagePath: 'https://items.s1.citilink.ru/1623768_v01_b.jpg',
-    name: 'Ноутбук Apple MacBook Pro 14.2',
-    count: 1,
-    price: 934990
-  },
-]
+import {useTypedSelector} from './hooks/useTypedSelector';
+import {useDispatch} from 'react-redux';
+import {removeFromCart} from '../store/cart/actions';
+
+
 const Header: FC = () => {
   const [isShowCart, setIsShowCart] = useState(false)
+  const cart = useTypedSelector(state => state.cart)
 
-  const total = cartItems.reduce((acc, item)=> acc + item.price, 0)
+  const total = cart.reduce((acc, item)=> acc + item.price, 0)
+
+  const dispatch = useDispatch()
 
   const removeHandler = (id: string) => {
-    console.log(id)
+    dispatch(removeFromCart(id))
   }
+
 
   return (
     <div className='flex items-center
@@ -30,8 +29,11 @@ const Header: FC = () => {
     >
       <img src={logoImage} alt="logoImage" width='180'/>
 
-      <button className='bg-transparent border-none' onClick={()=> setIsShowCart(!isShowCart)}>
+      <button className='bg-transparent border-none relative' onClick={()=> setIsShowCart(!isShowCart)}>
         <img src={cartIcon} alt="cartIcon" width='55'/>
+
+        <div className='text-red-600 absolute bottom-0 right-1 font-bold
+        p-2 rounded-full bg-white w-6 h-6 flex items-center content-center'>{cart.length}</div>
       </button>
 
       <div className={cn('bg-white absolute top-3 right-0 shadow-md p-5 rounded-md', {
@@ -41,9 +43,9 @@ const Header: FC = () => {
         top: 60
       }}
       >
-        {cartItems.map(item => (
+        {cart.map(item => (
 
-          <div className='flex items-center' key={`cart item ${item.name}`}>
+          <div className='flex items-center mb-4' key={`cart item ${item.name}`}>
             <img src={item.imagePath} alt={item.name} width='55' height='55' className='mr-3'/>
             <div className='flex-row'>
               <div>{item.name}</div>
@@ -58,7 +60,7 @@ const Header: FC = () => {
         ))}
 
         <div className='text-lg border-solid border-t-2 border-red-200 pt-1 mt-2'>
-          Total: <b>{total}rub</b>
+          Total: <b>{total.toLocaleString()}rub</b>
         </div>
       </div>
     </div>
